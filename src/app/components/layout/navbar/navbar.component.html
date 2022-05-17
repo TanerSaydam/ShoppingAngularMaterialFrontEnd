@@ -7,24 +7,20 @@
     <mat-icon>home</mat-icon>
     Ana Sayfa
   </button>
-  <button mat-button>
+  <button routerLink="/product" mat-button *ngIf="isAuth">
     <mat-icon>note_add</mat-icon>
     ürün Ekle
   </button>
-  <button mat-button>
-    <mat-icon>credit_card</mat-icon>
-    Ödenecek Tutar
-  </button>
-  <button routerLink="/order" mat-button>
+  <button *ngIf="!isAuth" routerLink="/order" mat-button>
     <mat-icon>shopping_cart</mat-icon>
     Siparişler
   </button>
   <span class="example-spacer"></span>
-  <button mat-raised-button color="primary">
+  <button *ngIf="!isAuth" routerLink="/login" mat-raised-button color="primary">
     <mat-icon>lock_open</mat-icon>
     Giriş Yap
   </button>
-  <button class="mx-2" mat-raised-button color="accent">
+  <button *ngIf="isAuth" (click)="logout()" class="mx-2" mat-raised-button color="accent">
     <mat-icon>close</mat-icon>
     Çıkış Yap
   </button>

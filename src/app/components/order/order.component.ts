@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { OrderModelDto } from 'src/app/models/ordersModelDto';
+import { ErrorService } from 'src/app/services/error.service';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
@@ -14,7 +15,8 @@ export class OrderComponent implements OnInit {
 
   constructor(
     private orderSerivce:OrderService,
-    private spinner:NgxSpinnerService
+    private spinner:NgxSpinnerService,
+    private errorService:ErrorService
   ) { }
 
   ngOnInit(): void {
@@ -28,6 +30,7 @@ export class OrderComponent implements OnInit {
       this.spinner.hide();
       this.orders = res.data
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     })
   }

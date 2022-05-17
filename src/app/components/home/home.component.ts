@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterContentChecked, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BasketModel } from 'src/app/models/basketModel';
 import { ProductModel } from 'src/app/models/productModel';
@@ -8,13 +8,15 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { BasketPaymentModel } from 'src/app/models/basketPaymentModel';
 import { OrderService } from 'src/app/services/order.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterContentChecked {
 
   displayedColumns: string[] = ['id', 'name', 'quantity', 'total', "transaction"];
   products: ProductModel[] = []
@@ -25,20 +27,27 @@ export class HomeComponent implements OnInit {
 
   animal: string;
   name: string;
+  isAuth:boolean = false;
 
   constructor(
     private productService:ProductService,
     private basketService:BasketService,
     private spinner:NgxSpinnerService,
     private snackbar:SnackbarService,
+    private authService:AuthService,
     public dialog: MatDialog,
-    private orderService:OrderService
+    private orderService:OrderService,
+    private errorService:ErrorService
   ) { }
 
   ngOnInit(): void {
     this.getListProducts();
     this.getListBaskets();
   }
+
+ ngAfterContentChecked(): void {
+  this.isAuth = this.authService.isAuthenticated();
+ }
 
   openDeleteDialog(basketModel:BasketModel): void {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
@@ -52,6 +61,8 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
+
 
   openPaymentDialog(): void {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
@@ -76,6 +87,7 @@ export class HomeComponent implements OnInit {
           this.getListBaskets();
           this.snackbar.openSnackBar("Ödeme işlemi başarılı. Ürünleriniz sevk aşamasına geçmiştir");
         },(err)=>{
+          this.errorService.errorHandler(err);
           this.spinner.hide();
         })
       }
@@ -88,6 +100,7 @@ export class HomeComponent implements OnInit {
       this.spinner.hide();
       this.products = res.data;
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     });
   }
@@ -102,6 +115,7 @@ export class HomeComponent implements OnInit {
         this.total = this.total + (element.product.price * element.quantity);
       });
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     });
   }
@@ -130,6 +144,7 @@ export class HomeComponent implements OnInit {
       this.getListBaskets();
       this.getListProducts();
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     })
   }
@@ -155,6 +170,7 @@ export class HomeComponent implements OnInit {
       this.getListBaskets();
       this.getListProducts();
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     })
   }
@@ -167,6 +183,7 @@ export class HomeComponent implements OnInit {
       this.getListBaskets();
       this.getListProducts();
     },(err)=>{
+      this.errorService.errorHandler(err);
       this.spinner.hide();
     })
   }

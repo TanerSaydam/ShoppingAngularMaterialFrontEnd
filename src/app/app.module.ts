@@ -12,9 +12,9 @@ import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { DeleteDialogComponent, HomeComponent, PaymentDialogComponent } from './components/home/home.component';
 import {MatInputModule} from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {MatCardModule} from '@angular/material/card';
@@ -22,6 +22,10 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { OrderComponent } from './components/order/order.component';
 import { FilterProductPipe } from './pipe/filter-product.pipe';
+import { LoginComponent } from './components/login/login.component';
+import { ProductComponent } from './components/product/product.component';
+import { AuthInterceptor } from './components/interceptors/auth.interceptor';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,10 @@ import { FilterProductPipe } from './pipe/filter-product.pipe';
     DeleteDialogComponent,
     PaymentDialogComponent,
     OrderComponent,
-    FilterProductPipe
+    FilterProductPipe,
+    LoginComponent,
+    ProductComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -50,10 +57,12 @@ import { FilterProductPipe } from './pipe/filter-product.pipe';
     NgxSpinnerModule,
     MatCardModule,
     MatDialogModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    ReactiveFormsModule
   ],
   providers: [
-    {provide: "apiUrl", useValue:"https://webapi.angulareducation.com/api/"}
+    {provide: "apiUrl", useValue:"https://webapi.angulareducation.com/api/"},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })
